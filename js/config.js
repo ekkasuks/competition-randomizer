@@ -12,7 +12,7 @@
  */
 const CONFIG = {
   // วาง URL ของ Google Apps Script Web App ที่นี่ (ลงท้ายด้วย /exec)
-  GAS_URL: "https://script.google.com/macros/s/AKfycbz_seIsyUCcfGXOYmrYN1v-zK7jMzEt7FxKhrlt11CcKmQeCFihIJ3XnxphgLIiF4Ni6w/exec",
+  GAS_URL: "https://script.google.com/macros/s/AKfycbwqaClGzZsAyXz72SE99ns21V__KviMx2mmfznu9dhtIpWghG3ZXk_EYpSFBGxvnXBC6g/exec",
 
   // รหัสผ่านแอดมิน (ต้องตรงกับที่ตั้งใน Apps Script เมื่อใช้โหมด GAS)
   ADMIN_KEY: "banmai2569",
