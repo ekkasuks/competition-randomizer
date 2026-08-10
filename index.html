@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบสุ่มและโหวตการแข่งขัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div id="topbar"></div>
+
+    <div class="panel" style="text-align:center;padding:40px 24px;">
+      <div class="section-eyebrow">ยินดีต้อนรับ</div>
+      <h2 style="font-size:30px;">จัดการ · สุ่ม · โหวต · ประกาศผล</h2>
+      <p class="hint" style="max-width:560px;margin:0 auto 8px;">
+        ระบบเดียวครบทุกขั้นตอนของการแข่งขัน รองรับหลายรายการพร้อมกัน
+        เลือกเมนูด้านล่างเพื่อเริ่มใช้งาน
+      </p>
+    </div>
+
+    <div class="grid-2">
+      <a href="admin.html" class="panel" style="text-decoration:none;color:inherit;display:block;">
+        <div style="font-size:38px;">🛠️</div>
+        <h2>หน้าแอดมิน</h2>
+        <p class="hint">สร้างรายการแข่งขัน เพิ่มทีม/สมาชิก แนบรูป ตั้งผู้โหวต และเปิด-ปิดการโหวต</p>
+      </a>
+
+      <a href="draw.html" class="panel" style="text-decoration:none;color:inherit;display:block;">
+        <div style="font-size:38px;">🎲</div>
+        <h2>สุ่มการแข่งขัน</h2>
+        <p class="hint">เลือกรายการแล้วสุ่มจัดคิวทีม พร้อมเอฟเฟกต์สปอตไลต์ คอนเฟตติ และเสียงเร้าใจ</p>
+      </a>
+
+      <a href="result.html" class="panel" style="text-decoration:none;color:inherit;display:block;">
+        <div style="font-size:38px;">🏅</div>
+        <h2>ประกาศผลโหวต</h2>
+        <p class="hint">ดูอันดับ 1–3 ที่คำนวณจากคะแนนโหวต พร้อมหน้าประกาศผลแบบเต็มจอ</p>
+      </a>
+
+      <div class="panel">
+        <div style="font-size:38px;">🔗</div>
+        <h2>ลิงก์สำหรับผู้โหวต</h2>
+        <p class="hint">
+          ผู้โหวตเปิดลิงก์ที่แอดมินคัดลอกส่งให้ (หน้า <code>vote.html</code>)
+          เลือกชื่อตนเอง แล้วเลือกทีมที่ 1–3
+        </p>
+      </div>
+    </div>
+
+    <p class="center text-muted" style="margin-top:26px;font-size:14px;">
+      สถานะการเชื่อมต่อแสดงที่มุมบนขวาของทุกหน้า —
+      โหมดทดลองเก็บข้อมูลในเครื่องนี้เท่านั้น ต่อ Google Sheets เพื่อใช้หลายเครื่อง
+    </p>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    document.getElementById("topbar").innerHTML = renderTopbar("home");
+  </script>
+</body>
+</html>

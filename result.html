@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ประกาศผลโหวต</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* โพเดียม */
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      align-items: end;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .pod {
+      background: linear-gradient(180deg, var(--stage-2), var(--stage));
+      border: 1px solid var(--line);
+      border-radius: 16px 16px 0 0;
+      padding: 18px 12px;
+      text-align: center;
+      position: relative;
+    }
+    .pod .medal { font-size: 34px; }
+    .pod .pname {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      margin: 6px 0 2px;
+    }
+    .pod .pscore { color: var(--gold); font-weight: 600; }
+    .pod-1 { border-color: var(--gold); box-shadow: var(--shadow-gold); padding-top: 30px; }
+    .pod-1 .pname { font-size: 22px; }
+    .pod img.avatar { width: 64px; height: 64px; margin: 0 auto 8px; display: block; }
+
+    @media (max-width: 620px) {
+      .podium { grid-template-columns: 1fr; }
+    }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: #0e1330;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .rank-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      background: var(--stage-2);
+      flex-shrink: 0;
+    }
+
+    /* โหมดประกาศเต็มจอ */
+    #announce {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(800px 500px at 50% 0%, #1a2350, #070b1e 70%);
+      z-index: 9990;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    #announce .a-eyebrow {
+      font-family: var(--font-display);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    #announce .a-medal { font-size: 90px; margin: 10px 0; }
+    #announce .a-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(34px, 8vw, 80px);
+      background: linear-gradient(180deg, #fff, #ffe6a1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: flash 0.7s ease;
+    }
+    #announce .a-score { color: var(--gold); font-size: 22px; margin-top: 6px; }
+    #announce .a-members {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 640px;
+    }
+    #announce .a-hint { color: var(--muted); margin-top: 30px; font-size: 15px; }
+    @keyframes flash {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="topbar"></div>
+
+    <div class="panel">
+      <div class="section-eyebrow">ประกาศผล</div>
+      <h2>ผลการโหวตการแข่งขัน</h2>
+      <p class="hint">เลือกรายการเพื่อดูอันดับ จัดอันดับด้วยคะแนนเฉลี่ย (ผู้โหวตให้คะแนนทีมละ 1–10)</p>
+      <select id="compSelect"><option value="">— กำลังโหลด —</option></select>
+      <div id="statusLine" class="text-muted" style="font-size:14px;margin-top:10px;"></div>
+    </div>
+
+    <div id="resultArea" class="hidden">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <h2 class="mt-0">อันดับผลโหวต</h2>
+          <button class="btn btn-primary" id="btnAnnounce">🎉 ประกาศผลแบบเต็มจอ</button>
+        </div>
+        <div id="podium"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="mt-0">คะแนนทั้งหมด</h2>
+        <div class="list" id="fullRank"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- โหมดประกาศเต็มจอ -->
+  <div id="announce" class="hidden">
+    <div class="a-eyebrow" id="aEyebrow">รางวัลที่ 3</div>
+    <div class="a-medal" id="aMedal">🥉</div>
+    <div class="a-name" id="aName">—</div>
+    <div class="a-score" id="aScore"></div>
+    <div class="a-members" id="aMembers"></div>
+    <div class="a-hint" id="aHint">กดปุ่มด้านล่างเพื่อเฉลยลำดับถัดไป</div>
+    <div class="btn-row" style="justify-content:center;margin-top:20px;">
+      <button class="btn btn-primary btn-lg" id="aNext">เฉลยต่อ ▶</button>
+      <button class="btn btn-ghost" id="aClose">ปิด</button>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/result.js"></script>
+</body>
+</html>

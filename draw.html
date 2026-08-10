@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สุ่มการแข่งขัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* -------- เวทีสุ่ม -------- */
+    .stage {
+      position: relative;
+      border-radius: 24px;
+      padding: 40px 20px 34px;
+      background:
+        radial-gradient(600px 300px at 50% -40px, rgba(255, 197, 61, 0.28), rgba(255, 197, 61, 0) 70%),
+        linear-gradient(180deg, #0e1430, #0a0f28);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      text-align: center;
+      min-height: 300px;
+    }
+    /* ลำแสงสปอตไลต์ */
+    .stage::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 220px solid transparent;
+      border-right: 220px solid transparent;
+      border-top: 420px solid rgba(255, 197, 61, 0.09);
+      filter: blur(6px);
+      pointer-events: none;
+    }
+    .stage-inner {
+      position: relative;
+      z-index: 2;
+    }
+    .reel {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(30px, 7vw, 64px);
+      line-height: 1.1;
+      min-height: 1.3em;
+      letter-spacing: 0.5px;
+      background: linear-gradient(180deg, #fff, #ffe6a1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: transform 0.05s;
+    }
+    .reel.spinning {
+      color: var(--text);
+      -webkit-text-fill-color: var(--text);
+    }
+    .reel-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      margin: 0 auto 14px;
+      display: none;
+      box-shadow: var(--shadow-gold);
+    }
+    .reveal-members {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .member-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 15px;
+      animation: pop 0.4s both;
+    }
+    @keyframes pop {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .reveal-flash {
+      animation: flash 0.6s ease;
+    }
+    @keyframes flash {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .queue-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #2a1d00;
+      flex-shrink: 0;
+    }
+    .stage-toolbar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="topbar"></div>
+
+    <!-- เลือกรายการ -->
+    <div class="panel" id="pickPanel">
+      <div class="section-eyebrow">เริ่มต้น</div>
+      <h2>เลือกรายการแข่งขันที่จะสุ่ม</h2>
+      <p class="hint">สุ่มทีละรายการ ระบบจะจดจำลำดับคิวที่สุ่มได้ของแต่ละรายการ</p>
+      <select id="compSelect">
+        <option value="">— กำลังโหลด —</option>
+      </select>
+    </div>
+
+    <!-- เวทีสุ่ม -->
+    <div id="drawArea" class="hidden">
+      <div class="panel" style="padding:0;overflow:hidden;">
+        <div class="stage">
+          <div class="stage-inner">
+            <div class="section-eyebrow" id="stageLabel">พร้อมสุ่ม</div>
+            <img id="reelImg" class="reel-img" alt="" />
+            <div id="reel" class="reel">กดปุ่มเพื่อเริ่มสุ่ม</div>
+            <div id="revealMembers" class="reveal-members"></div>
+
+            <div class="stage-toolbar">
+              <button class="btn btn-primary btn-lg" id="btnDraw">🎲 สุ่มทีม</button>
+              <button class="btn btn-ghost btn-sm" id="btnMute" title="เปิด/ปิดเสียง">🔊 เสียง</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- คิวที่สุ่มได้ -->
+      <div class="grid-2">
+        <div class="panel">
+          <h2 class="mt-0">ลำดับคิวที่สุ่มได้</h2>
+          <div class="list" id="queueList"></div>
+        </div>
+        <div class="panel">
+          <h2 class="mt-0">ทีมที่ยังไม่ถูกสุ่ม</h2>
+          <div class="list" id="remainList"></div>
+          <div class="btn-row" style="margin-top:14px;">
+            <button class="btn btn-ghost" id="btnReset">↺ รีเซ็ตการสุ่มทั้งหมด</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/draw.js"></script>
+</body>
+</html>

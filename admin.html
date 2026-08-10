@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แอดมิน · ระบบสุ่มและโหวตการแข่งขัน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div id="topbar"></div>
+
+    <!-- ประตูรหัสแอดมิน -->
+    <div id="gate" class="panel" style="max-width:420px;margin:40px auto;">
+      <div class="section-eyebrow">เฉพาะผู้ดูแลระบบ</div>
+      <h2>เข้าสู่หน้าแอดมิน</h2>
+      <p class="hint">กรอกรหัสผ่านแอดมินเพื่อจัดการรายการแข่งขัน</p>
+      <label for="adminKey">รหัสผ่านแอดมิน</label>
+      <input type="password" id="adminKey" placeholder="••••••••" />
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btnLogin">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+
+    <!-- เนื้อหาแอดมิน -->
+    <div id="app" class="hidden">
+      <!-- แผงรายการแข่งขัน -->
+      <div class="panel">
+        <div class="section-eyebrow">ขั้นที่ 1</div>
+        <h2>รายการแข่งขัน</h2>
+        <p class="hint">สร้างได้หลายรายการ แต่ละรายการมีทีม สมาชิก และการโหวตของตัวเอง</p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+          <div style="flex:1;min-width:220px;">
+            <label for="newCompName" class="mt-0">ชื่อรายการแข่งขันใหม่</label>
+            <input type="text" id="newCompName" placeholder="เช่น การประกวดร้องเพลง ป.4-6" />
+          </div>
+          <button class="btn btn-primary" id="btnAddComp">+ เพิ่มรายการ</button>
+        </div>
+
+        <div class="list" id="compList" style="margin-top:16px;"></div>
+      </div>
+
+      <!-- แผงจัดการรายการที่เลือก -->
+      <div id="compDetail" class="hidden">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div class="section-eyebrow">กำลังจัดการ</div>
+              <h2 id="detailTitle" style="margin:0;"></h2>
+            </div>
+            <div id="detailStatus"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- ทีม -->
+          <div class="panel">
+            <div class="section-eyebrow">ขั้นที่ 2</div>
+            <h2>ทีมและสมาชิก</h2>
+            <p class="hint">เพิ่มชื่อทีม รายชื่อสมาชิก (บรรทัดละ 1 คน) และลิงก์รูปทีม (ถ้ามี)</p>
+
+            <label for="teamName" class="mt-0">ชื่อทีม</label>
+            <input type="text" id="teamName" placeholder="เช่น ทีมดาวรุ่ง" />
+
+            <label for="teamImage">ลิงก์รูปทีม (URL)</label>
+            <input type="url" id="teamImage" placeholder="https://... (ไม่บังคับ)" />
+
+            <label for="teamMembers">รายชื่อสมาชิก (บรรทัดละ 1 คน)</label>
+            <textarea id="teamMembers" placeholder="ด.ช. ก...&#10;ด.ญ. ข...&#10;ด.ช. ค..."></textarea>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" id="btnSaveTeam">บันทึกทีม</button>
+              <button class="btn btn-ghost hidden" id="btnCancelTeam">ยกเลิกแก้ไข</button>
+            </div>
+
+            <div class="list" id="teamList" style="margin-top:18px;"></div>
+          </div>
+
+          <!-- ผู้โหวต + การโหวต -->
+          <div class="panel">
+            <div class="section-eyebrow">ขั้นที่ 3</div>
+            <h2>ผู้โหวตและการลงคะแนน</h2>
+            <p class="hint">กำหนดรายชื่อผู้มีสิทธิ์โหวต (บรรทัดละ 1 คน) แล้วเปิดโหวต และคัดลอกลิงก์ส่งให้ผู้โหวต</p>
+
+            <label for="voterNames" class="mt-0">รายชื่อผู้โหวต</label>
+            <textarea id="voterNames" placeholder="ครูสมชาย&#10;ครูสมหญิง&#10;ผอ. ..."></textarea>
+            <div class="btn-row">
+              <button class="btn" id="btnSaveVoters">บันทึกรายชื่อผู้โหวต</button>
+            </div>
+
+            <div style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px;">
+              <div id="voteControls"></div>
+              <div id="voteProgress" class="text-muted" style="font-size:14px;margin-top:10px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:6px;">
+          <a class="btn" id="linkToDraw" href="#">🎲 ไปหน้าสุ่มรายการนี้</a>
+          <a class="btn" id="linkToResult" href="#">🏅 ดูผลรายการนี้</a>
+          <span class="spacer"></span>
+          <button class="btn btn-danger" id="btnDeleteComp">ลบรายการนี้</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
